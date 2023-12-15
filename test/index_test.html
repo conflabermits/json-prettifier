@@ -1,5 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Prettifier Web UI</title>
+    <style>
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #dfdfdf;
+        }
+        pre {
+            background-color: #f6f6f6;
+        }
+        input {
+            background-color: #f6f6f6;
+        }
+    </style>
 </head>
 <body>
     <h1>JSON Prettifier Web UI</h1>
@@ -11,7 +28,8 @@
     </form>
     <h2>Here's the response from the previous request:</h2>
     <p>Request URL: <a href="http://localhost:8080"></a></p>
-    <p>Response: <pre>
+    <p>Response:</p>
+    <pre>
 {
     "result": {
         "data": {
@@ -38,5 +56,5 @@
         }
     }
 }
-    </pre></p>
+    </pre>
 </body>

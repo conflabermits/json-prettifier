@@ -1,8 +1,26 @@
-{{if .Success}}
-    <head>
-        <title>JSON Prettifier Web UI</title>
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Prettifier Web UI</title>
+    <style>
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #dfdfdf;
+        }
+        pre {
+            background-color: #f6f6f6;
+        }
+        input {
+            background-color: #f6f6f6;
+        }
+    </style>
+</head>
+<body>
     <h1>JSON Prettifier Web UI</h1>
+{{ if .Success }}
     <h2>Enter another JSON content URL to get its response:</h2>
     <form method="POST">
         <label>URL:</label><br />
@@ -10,17 +28,18 @@
         <input type="submit">
     </form>
     <h2>Here's the response from the previous request:</h2>
-    <p>Request URL: <a href={{ .URL }}>{{ .URL }}</a></p>
-    <p>Response: <pre>{{ .Response }}</pre></p>
-{{else}}
-    <head>
-        <title>JSON Prettifier Web UI</title>
-    </head>
-    <h1>JSON Prettifier Web UI</h1>
+    <p>Request URL: <strong><a href={{ .URL }}>{{ .URL }}</a></strong></p>
+    <p>Response:</p>
+    <pre>
+{{ .Response }}
+    </pre>
+{{ else }}
     <h2>Enter a JSON content URL to get its response:</h2>
     <form method="POST">
         <label>URL:</label><br />
         <input type="text" name="url" size="80"><br /><br />
         <input type="submit">
     </form>
-{{end}}
+{{ end }}
+</body>
+</html>

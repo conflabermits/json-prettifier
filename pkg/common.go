@@ -68,10 +68,10 @@ func Web(port string) {
 			return
 		}
 
-		reqURL := r.FormValue("url")
+		reqURL := r.FormValue("urlInput")
 		fmt.Println("Request URL: " + reqURL)
-		httpResponse := Http_req(reqURL)
-		response := Parse_json(httpResponse)
+		uglyJson := Http_req(reqURL)
+		response := Parse_json(uglyJson)
 		fmt.Println("Response: " + response)
 
 		result := ResultDetails{

@@ -8,6 +8,8 @@ import (
 	"io"
 	"io/fs"
 	"net/http"
+	"reflect"
+	"strings"
 	"time"
 )
 
@@ -52,6 +54,7 @@ func Parse_json(jsonString string) string {
 type ResultDetails struct {
 	Success  bool
 	URL      string
+	Schema   string
 	Response string
 }
 
@@ -72,15 +75,100 @@ func Web(port string) {
 		fmt.Println("Request URL: " + reqURL)
 		httpResponse := Http_req(reqURL)
 		response := Parse_json(httpResponse)
-		fmt.Println("Response: " + response)
+		//fmt.Println("Response: " + response)
+		fmt.Println("JSON Schema: ")
+		schema, err := analyzeJSON([]byte(response))
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		fmt.Println(schema)
 
 		result := ResultDetails{
 			Success:  true,
 			URL:      reqURL,
+			Schema:   schema,
 			Response: response,
 		}
 		tmpl.Execute(w, result)
 	})
 
 	http.ListenAndServe(":"+port, nil)
+}
+
+func analyzeJSON(jsonData []byte) (string, error) {
+	var data interface{}
+	err := json.Unmarshal(jsonData, &data)
+	if err != nil {
+		return "", fmt.Errorf("failed to unmarshal JSON: %w", err)
+	}
+
+	schema := analyzeValue(data, "")
+	return schema, nil
+}
+
+func analyzeValue(value interface{}, path string) string {
+	switch v := value.(type) {
+	case map[string]interface{}:
+		var sb strings.Builder
+		sb.WriteString(fmt.Sprintf("(dict, length: %d)\n", len(v)))
+		for key, val := range v {
+			newPath1 := fmt.Sprintf("    %s", path)
+			keyString1 := fmt.Sprintf("\"%s\": ", key)
+			sb.WriteString(newPath1 + keyString1)
+			sb.WriteString(analyzeValue(val, newPath1))
+		}
+		return sb.String()
+	case []interface{}:
+		var sb strings.Builder
+		sb.WriteString(fmt.Sprintf("(array, length: %d)\n", len(v)))
+
+		if len(v) > 0 {
+			// Analyze the first element to determine the structure of the array items
+			firstElement := v[0]
+			switch element := firstElement.(type) {
+			case map[string]interface{}:
+				for key, val := range element {
+					newPath2 := fmt.Sprintf("    %s", path)
+					keyString2 := fmt.Sprintf("\"%s\": ", key)
+					sb.WriteString(newPath2 + keyString2)
+					sb.WriteString(analyzeValue(val, path))
+				}
+			default: //If the first element is not a map, just print the type
+				sb.WriteString(fmt.Sprintf("    %s\n", getType(element)))
+			}
+		}
+		return sb.String()
+
+	default:
+		return fmt.Sprintf("%s\n", getType(v))
+	}
+}
+
+func getType(value interface{}) string {
+	if value == nil {
+		return "null"
+	}
+	t := reflect.TypeOf(value)
+	if t == nil {
+		return "unknown"
+	}
+
+	switch t.Kind() {
+	case reflect.String:
+		return "string"
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return "int"
+	case reflect.Float32, reflect.Float64:
+		return "float"
+	case reflect.Bool:
+		return "bool"
+	default:
+		// Attempt type assertion for time.Time
+		if _, ok := value.(string); ok {
+			return "date" // Or a more specific date/time check if needed
+		}
+		return t.String()
+	}
 }

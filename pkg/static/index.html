@@ -29,6 +29,10 @@
     </form>
     <h2>Here's the response from the previous request:</h2>
     <p>Request URL: <strong><a href={{ .URL }}>{{ .URL }}</a></strong></p>
+    <p>JSON Schema:</p>
+    <pre>
+{{ .Schema }}
+    </pre>
     <p>Response:</p>
     <pre>
 {{ .Response }}

@@ -51,6 +51,17 @@ func Parse_json(jsonString string) string {
 	return response
 }
 
+func get_wheel_length(jsonString string) string {
+
+	var jsonMap map[string]interface{}
+	json.Unmarshal([]byte(jsonString), &jsonMap)
+
+	childarraylength := len(jsonMap["result"].(map[string]interface{})["data"].(map[string]interface{})["json"].([]interface{}))
+	response := fmt.Sprintf("%d", childarraylength)
+	fmt.Println(response)
+	return response
+}
+
 type ResultDetails struct {
 	Success  bool
 	URL      string
@@ -91,6 +102,14 @@ func Web(port string) {
 			Response: response,
 		}
 		tmpl.Execute(w, result)
+	})
+
+	http.HandleFunc("/thewheel", func(w http.ResponseWriter, r *http.Request) {
+		reqURL := "https://www.officedrummerwearswigs.com/api/trpc/songRequest.getLatest"
+		httpResponse := Http_req(reqURL)
+		response := get_wheel_length(httpResponse)
+		//fmt.Println("Length of json array: ", len(response))
+		fmt.Fprint(w, response)
 	})
 
 	http.ListenAndServe(":"+port, nil)

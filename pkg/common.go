@@ -51,7 +51,7 @@ func Parse_json(jsonString string) string {
 	return response
 }
 
-func get_wheel_length(jsonString string) string {
+func get_wheel_count(jsonString string) string {
 
 	var jsonMap map[string]interface{}
 	json.Unmarshal([]byte(jsonString), &jsonMap)
@@ -76,7 +76,7 @@ func Web(port string) {
 	filesys := fs.FS(content)
 	tmpl := template.Must(template.ParseFS(filesys, "static/index.html"))
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/json-prettifier", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			tmpl.Execute(w, nil)
 			return
@@ -104,10 +104,10 @@ func Web(port string) {
 		tmpl.Execute(w, result)
 	})
 
-	http.HandleFunc("/thewheel", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/json-prettifier/wheelcount", func(w http.ResponseWriter, r *http.Request) {
 		reqURL := "https://www.officedrummerwearswigs.com/api/trpc/songRequest.getLatest"
 		httpResponse := Http_req(reqURL)
-		response := get_wheel_length(httpResponse)
+		response := get_wheel_count(httpResponse)
 		//fmt.Println("Length of json array: ", len(response))
 		fmt.Fprint(w, response)
 	})

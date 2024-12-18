@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"io"
 	"io/fs"
+	"log"
 	"net/http"
 	"reflect"
 	"strings"
@@ -45,7 +46,7 @@ func Parse_json(jsonString string) string {
 
 	full_json, err := json.MarshalIndent(jsonMap, "", "    ")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 	response = string(full_json)
 	return response
@@ -58,7 +59,7 @@ func get_wheel_count(jsonString string) string {
 
 	childarraylength := len(jsonMap["result"].(map[string]interface{})["data"].(map[string]interface{})["json"].([]interface{}))
 	response := fmt.Sprintf("%d", childarraylength)
-	fmt.Println(response)
+	//fmt.Println(response)
 	return response
 }
 
@@ -83,17 +84,17 @@ func Web(port string) {
 		}
 
 		reqURL := r.FormValue("url")
-		fmt.Println("Request URL: " + reqURL)
+		//fmt.Println("Request URL: " + reqURL)
 		httpResponse := Http_req(reqURL)
 		response := Parse_json(httpResponse)
 		//fmt.Println("Response: " + response)
-		fmt.Println("JSON Schema: ")
+		//fmt.Println("JSON Schema: ")
 		schema, err := analyzeJSON([]byte(response))
 		if err != nil {
-			fmt.Println("Error:", err)
+			log.Println("Error:", err)
 			return
 		}
-		fmt.Println(schema)
+		//fmt.Println(schema)
 
 		result := ResultDetails{
 			Success:  true,

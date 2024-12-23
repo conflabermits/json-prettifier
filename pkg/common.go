@@ -64,8 +64,8 @@ func get_wheel_count(jsonString string) string {
 }
 
 type ResultDetails struct {
-	Success  bool
-	URL      string
+	Type     string
+	Input    string
 	Schema   string
 	Response string
 }
@@ -84,19 +84,40 @@ func Web(port string) {
 		}
 
 		reqURL := r.FormValue("url")
-		httpResponse := Http_req(reqURL)
-		response := Parse_json(httpResponse)
-		schema, err := analyzeJSON([]byte(response))
+		jsonInput := r.FormValue("json")
+		uglyJson := ""
+		inputType := ""
+		inputValue := ""
+		if reqURL == "" && jsonInput == "" {
+			http.Error(w, "No input provided", http.StatusBadRequest)
+			return
+		}
+		if reqURL != "" && jsonInput != "" {
+			http.Error(w, "Provide only one input", http.StatusBadRequest)
+			return
+		}
+		if reqURL != "" && jsonInput == "" {
+			inputType = "URL"
+			inputValue = reqURL
+			uglyJson = Http_req(reqURL)
+		}
+		if reqURL == "" && jsonInput != "" {
+			inputType = "JSON"
+			inputValue = jsonInput
+			uglyJson = jsonInput
+		}
+		prettyJson := Parse_json(uglyJson)
+		schema, err := analyzeJSON([]byte(prettyJson))
 		if err != nil {
 			log.Println("Error:", err)
 			return
 		}
 
 		result := ResultDetails{
-			Success:  true,
-			URL:      reqURL,
+			Type:     inputType,
+			Input:    inputValue,
 			Schema:   schema,
-			Response: response,
+			Response: prettyJson,
 		}
 		tmpl.Execute(w, result)
 	})

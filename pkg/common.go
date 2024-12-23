@@ -84,17 +84,13 @@ func Web(port string) {
 		}
 
 		reqURL := r.FormValue("url")
-		//fmt.Println("Request URL: " + reqURL)
 		httpResponse := Http_req(reqURL)
 		response := Parse_json(httpResponse)
-		//fmt.Println("Response: " + response)
-		//fmt.Println("JSON Schema: ")
 		schema, err := analyzeJSON([]byte(response))
 		if err != nil {
 			log.Println("Error:", err)
 			return
 		}
-		//fmt.Println(schema)
 
 		result := ResultDetails{
 			Success:  true,
@@ -109,7 +105,6 @@ func Web(port string) {
 		reqURL := "https://www.officedrummerwearswigs.com/api/trpc/songRequest.getLatest"
 		httpResponse := Http_req(reqURL)
 		response := get_wheel_count(httpResponse)
-		//fmt.Println("Length of json array: ", len(response))
 		fmt.Fprint(w, response)
 	})
 

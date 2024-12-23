@@ -17,7 +17,7 @@ func parseArgs() (*Options, error) {
 
 	flag.StringVar(&options.Port, "port", "8080", "Port to run the local web server")
 	flag.Usage = func() {
-		fmt.Printf("Usage: json-prettifier-web [options]\n\n")
+		fmt.Printf("Usage: json-prettifier [options]\n\n")
 		flag.PrintDefaults()
 	}
 	flag.Parse()

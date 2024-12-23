@@ -9,16 +9,15 @@ import (
 )
 
 type Options struct {
-	Url string
+	Port string
 }
 
 func parseArgs() (*Options, error) {
 	options := &Options{}
 
-	flag.StringVar(&options.Url, "url", "", "url to check")
-	//https://www.officedrummerwearswigs.com/api/trpc/songRequest.getLatest
+	flag.StringVar(&options.Port, "port", "8080", "Port to run the local web server")
 	flag.Usage = func() {
-		fmt.Printf("Usage: json-prettifier [options]\n\n")
+		fmt.Printf("Usage: json-prettifier-web [options]\n\n")
 		flag.PrintDefaults()
 	}
 	flag.Parse()
@@ -32,10 +31,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	if len(options.Url) > 0 {
-		response := common.Http_req(options.Url)
-		output := common.Parse_json(response)
-		fmt.Println(output)
-	}
-
+	common.Web(options.Port)
 }

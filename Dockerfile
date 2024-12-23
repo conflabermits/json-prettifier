@@ -10,7 +10,7 @@ ADD . /app
 WORKDIR /app
 COPY go.mod ./
 RUN  go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /main cmd/json-prettifier-web/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /main cmd/json-prettifier/main.go
 
 FROM alpine
 COPY --from=builder /main ./

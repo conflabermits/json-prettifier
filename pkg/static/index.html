@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Prettifier Web UI</title>
+    <title>JSON Prettifier</title>
     <style>
         
         body {
@@ -19,16 +19,44 @@
     </style>
 </head>
 <body>
-    <h1>JSON Prettifier Web UI</h1>
-{{ if .Success }}
-    <h2>Enter another JSON content URL to get its response:</h2>
+    <h1>JSON Prettifier</h1>
+{{ if eq "URL" .Type }}
+    <h2>Enter another JSON content URL to get its pretty response:</h2>
     <form method="POST">
-        <label>URL:</label><br />
-        <input type="text" name="url" size="80" value="{{ .URL }}"><br /><br />
+        <label for="url">URL:</label><br />
+        <input type="text" id="url" name="url" size="80" value="{{ .Input }}"><br /><br />
+        <input type="submit">
+    </form>
+    <h2>Or enter JSON text to make it pretty:</h2>
+    <form method="POST">
+        <label for="json">Text:</label><br>
+        <textarea name="json" id="json" cols="80" rows="20"></textarea><br /><br />
         <input type="submit">
     </form>
     <h2>Here's the response from the previous request:</h2>
-    <p>Request URL: <strong><a href={{ .URL }}>{{ .URL }}</a></strong></p>
+    <p>Request URL: <strong><a href="{{ .Input }}">{{ .Input }}</a></strong></p>
+    <p>JSON Schema:</p>
+    <pre>
+{{ .Schema }}
+    </pre>
+    <p>Response:</p>
+    <pre>
+{{ .Response }}
+    </pre>
+{{ else if eq "JSON" .Type }}
+    <h2>Enter another JSON text to make it pretty:</h2>
+    <form method="POST">
+        <label for="json">Text:</label><br>
+        <textarea name="json" id="json" cols="80" rows="20">{{ .Input }}</textarea><br /><br />
+        <input type="submit">
+    </form>
+    <h2>Or enter a JSON content URL to get its pretty response:</h2>
+    <form method="POST">
+        <label for="url">URL:</label><br />
+        <input type="text" id="url" name="url" size="80"><br /><br />
+        <input type="submit">
+    </form>
+    <h2>Here's the response from the previous request:</h2>
     <p>JSON Schema:</p>
     <pre>
 {{ .Schema }}
@@ -38,10 +66,16 @@
 {{ .Response }}
     </pre>
 {{ else }}
-    <h2>Enter a JSON content URL to get its response:</h2>
+    <h2>Enter a JSON content URL to get its pretty response:</h2>
     <form method="POST">
-        <label>URL:</label><br />
-        <input type="text" name="url" size="80"><br /><br />
+        <label for="url">URL:</label><br />
+        <input type="text" id="url" name="url" size="80"><br /><br />
+        <input type="submit">
+    </form>
+    <h2>Or enter JSON text to make it pretty:</h2>
+    <form method="POST">
+        <label for="json">Text:</label><br>
+        <textarea name="json" id="json" cols="80" rows="20"></textarea><br /><br />
         <input type="submit">
     </form>
 {{ end }}

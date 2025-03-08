@@ -123,7 +123,7 @@ func Web(port string) {
 	})
 
 	http.HandleFunc("/json-prettifier/wheelcount", func(w http.ResponseWriter, r *http.Request) {
-		reqURL := "https://www.officedrummerwearswigs.com/api/trpc/songRequest.getLatest"
+		reqURL := "https://officedrummerwearswigs.com/api/trpc/songRequest.getLatest"
 		httpResponse := Http_req(reqURL)
 		response := get_wheel_count(httpResponse)
 		fmt.Fprint(w, response)
